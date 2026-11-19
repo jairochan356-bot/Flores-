@@ -1,0 +1,381 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Te Amo Mucho - Un Ramo Para Ti</title>
+    <!-- Tailwind CSS para el diseño responsivo y utilidades -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fuentes románticas y elegantes de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Configuración de fuentes personalizadas */
+        .font-script {
+            font-family: 'Great Vibes', cursive;
+        }
+        .font-serif-elegant {
+            font-family: 'Playfair Display', serif;
+        }
+        .font-sans-clean {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Fondo degradado cálido y romántico */
+        body {
+            background: radial-gradient(circle at center, #fff5f7 0%, #ffe3e8 45%, #f9cbd6 100%);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animación suave de flotación/respiración para el ramo de flores */
+        @keyframes gentleSway {
+            0%, 100% {
+                transform: rotate(-1.5deg) translateY(0px);
+            }
+            50% {
+                transform: rotate(1.5deg) translateY(-6px);
+            }
+        }
+
+        .bouquet-container {
+            animation: gentleSway 6s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        /* Animación individual sutil para las flores */
+        @keyframes bloomPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.03);
+            }
+        }
+
+        .flower-head {
+            animation: bloomPulse 4s ease-in-out infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .flower-delay-1 { animation-delay: 0.5s; }
+        .flower-delay-2 { animation-delay: 1.2s; }
+        .flower-delay-3 { animation-delay: 2.0s; }
+
+        /* Animación de caída de pétalos de fondo */
+        @keyframes fallAndSway {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.85;
+            }
+            50% {
+                transform: translateY(45vh) translateX(35px) rotate(180deg);
+            }
+            90% {
+                opacity: 0.85;
+            }
+            100% {
+                transform: translateY(105vh) translateX(-25px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .floating-petal {
+            position: fixed;
+            top: -50px;
+            pointer-events: none;
+            z-index: 1;
+            animation: fallAndSway linear infinite;
+        }
+
+        /* Animación de explosión de corazones al hacer clic */
+        @keyframes floatUpAndFade {
+            0% {
+                transform: translateY(0) scale(0.5) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-250px) scale(1.3) rotate(var(--rot));
+                opacity: 0;
+            }
+        }
+
+        .burst-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 50;
+            animation: floatUpAndFade 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* Efecto de brillo sutil en el texto principal */
+        .text-glow {
+            text-shadow: 0 4px 15px rgba(225, 29, 72, 0.2);
+        }
+
+        /* Estilo personalizado para el botón romántico */
+        .love-btn {
+            background: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #be123c 100%);
+            box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.45), 0 4px 10px -2px rgba(225, 29, 72, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .love-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 15px 30px -5px rgba(225, 29, 72, 0.6), 0 6px 15px -2px rgba(225, 29, 72, 0.4);
+        }
+
+        .love-btn:active {
+            transform: translateY(1px) scale(0.97);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 sm:p-6 relative select-none">
+
+    <!-- Contenedor para pétalos flotantes generados dinámicamente -->
+    <div id="petals-background" aria-hidden="true"></div>
+
+    <!-- Tarjeta principal romántica -->
+    <main class="relative z-10 max-w-lg w-full bg-white/75 backdrop-blur-md border border-rose-200/80 rounded-3xl shadow-2xl p-6 sm:p-10 flex flex-col items-center text-center transition-all duration-500">
+        
+        <!-- Pequeño detalle superior -->
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-100/80 text-rose-700 text-xs sm:text-sm font-sans-clean font-medium tracking-wider uppercase mb-3 shadow-sm">
+            <span>Para alguien muy especial</span>
+            <span class="text-rose-500">♥</span>
+        </div>
+
+        <!-- Ilustración SVG del Ramo de Flores -->
+        <div class="w-64 h-64 sm:w-80 sm:h-80 my-2 flex items-center justify-center bouquet-container cursor-pointer" id="bouquet-trigger" title="Toca las flores">
+            <svg viewBox="0 0 400 420" class="w-full h-full drop-shadow-xl overflow-visible" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- Degradados para el papel envoltorio -->
+                    <linearGradient id="paperBack" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fdf2f8"/>
+                        <stop offset="100%" stop-color="#fce7f3"/>
+                    </linearGradient>
+                    <linearGradient id="paperFrontLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fff1f2"/>
+                        <stop offset="100%" stop-color="#ffe4e6"/>
+                    </linearGradient>
+                    <linearGradient id="paperFrontRight" x1="100%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#ffe4e6"/>
+                        <stop offset="100%" stop-color="#fecdd3"/>
+                    </linearGradient>
+
+                    <!-- Degradados para rosas rojas y rosadas -->
+                    <radialGradient id="roseRed" cx="40%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#fb7185"/>
+                        <stop offset="50%" stop-color="#e11d48"/>
+                        <stop offset="100%" stop-color="#9f1239"/>
+                    </radialGradient>
+                    <radialGradient id="rosePink" cx="40%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#fbcfe8"/>
+                        <stop offset="55%" stop-color="#f472b6"/>
+                        <stop offset="100%" stop-color="#db2777"/>
+                    </radialGradient>
+                    <radialGradient id="rosePeach" cx="40%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#ffedd5"/>
+                        <stop offset="55%" stop-color="#fda4af"/>
+                        <stop offset="100%" stop-color="#f43f5e"/>
+                    </radialGradient>
+
+                    <!-- Degradado para hojas -->
+                    <linearGradient id="leafGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4ade80"/>
+                        <stop offset="100%" stop-color="#15803d"/>
+                    </linearGradient>
+                    <linearGradient id="leafDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#22c55e"/>
+                        <stop offset="100%" stop-color="#166534"/>
+                    </linearGradient>
+
+                    <!-- Degradado para el lazo -->
+                    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#be123c"/>
+                        <stop offset="50%" stop-color="#f43f5e"/>
+                        <stop offset="100%" stop-color="#be123c"/>
+                    </linearGradient>
+                </defs>
+
+                <!-- Papel trasero del ramo (Cono superior) -->
+                <path d="M 85 160 L 200 50 L 315 160 L 245 360 L 155 360 Z" fill="url(#paperBack)" stroke="#fbcfe8" stroke-width="2" stroke-linejoin="round"/>
+                <!-- Borde dorado interior sutil -->
+                <path d="M 95 162 L 200 60 L 305 162" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-opacity="0.5"/>
+
+                <!-- Hojas y follaje de fondo -->
+                <g class="foliage">
+                    <!-- Hoja izquierda alta -->
+                    <path d="M 140 165 Q 85 120 95 85 Q 135 95 155 150 Z" fill="url(#leafDark)"/>
+                    <path d="M 145 158 Q 115 120 100 92" fill="none" stroke="#86efac" stroke-width="1.2" opacity="0.6"/>
+                    
+                    <!-- Hoja derecha alta -->
+                    <path d="M 260 165 Q 315 120 305 85 Q 265 95 245 150 Z" fill="url(#leafDark)"/>
+                    <path d="M 255 158 Q 285 120 300 92" fill="none" stroke="#86efac" stroke-width="1.2" opacity="0.6"/>
+
+                    <!-- Hoja central superior -->
+                    <path d="M 200 130 Q 180 70 200 45 Q 220 70 200 130 Z" fill="url(#leafGreen)"/>
+                    
+                    <!-- Hojas laterales bajas -->
+                    <path d="M 120 200 Q 65 180 65 145 Q 105 145 135 185 Z" fill="url(#leafGreen)"/>
+                    <path d="M 280 200 Q 335 180 335 145 Q 295 145 265 185 Z" fill="url(#leafGreen)"/>
+                </g>
+
+                <!-- Tallos verdes que bajan hacia el centro -->
+                <g stroke="#166534" stroke-width="5" stroke-linecap="round">
+                    <line x1="150" y1="160" x2="195" y2="330" />
+                    <line x1="250" y1="160" x2="205" y2="330" />
+                    <line x1="200" y1="130" x2="200" y2="335" />
+                    <line x1="130" y1="200" x2="190" y2="325" />
+                    <line x1="270" y1="200" x2="210" y2="325" />
+                </g>
+
+                <!-- Pequeñas flores blancas de relleno (Gypsophila / Aliento de bebé) -->
+                <g fill="#ffffff" stroke="#fecdd3" stroke-width="1">
+                    <circle cx="115" cy="130" r="6"/><circle cx="122" cy="124" r="5"/><circle cx="110" cy="122" r="4.5"/>
+                    <circle cx="285" cy="130" r="6"/><circle cx="278" cy="124" r="5"/><circle cx="290" cy="122" r="4.5"/>
+                    <circle cx="165" cy="95" r="5.5"/><circle cx="173" cy="90" r="4.5"/>
+                    <circle cx="235" cy="95" r="5.5"/><circle cx="227" cy="90" r="4.5"/>
+                    <circle cx="95" cy="175" r="5"/><circle cx="305" cy="175" r="5"/>
+                </g>
+
+                <!-- FLORES PRINCIPALES DEL RAMO -->
+                
+                <!-- 1. Rosa Superior Central (Roja intensa) -->
+                <g class="flower-head" transform="translate(200, 120)">
+                    <circle cx="0" cy="0" r="34" fill="url(#roseRed)"/>
+                    <!-- Pétalos en espiral -->
+                    <path d="M -22 -10 C -30 -28, 10 -35, 22 -12 C 32 8, 12 28, -12 24 C -28 20, -32 -2, -16 -14" fill="none" stroke="#881337" stroke-width="2.2" stroke-linecap="round"/>
+                    <path d="M -14 -6 C -18 -18, 8 -22, 14 -6 C 20 6, 6 18, -8 14 C -18 10, -18 -2, -8 -8" fill="none" stroke="#fda4af" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+                    <path d="M -5 -3 C -7 -9, 5 -10, 7 -3 C 9 4, 2 9, -4 6 C -8 4, -6 -2, 0 -2" fill="none" stroke="#ffe4e6" stroke-width="1.8" stroke-linecap="round"/>
+                </g>
+
+                <!-- 2. Rosa Izquierda Superior (Rosada) -->
+                <g class="flower-head flower-delay-1" transform="translate(142, 148)">
+                    <circle cx="0" cy="0" r="30" fill="url(#rosePink)"/>
+                    <path d="M -18 -8 C -25 -24, 8 -30, 18 -10 C 26 6, 10 24, -10 20 C -24 16, -26 -2, -14 -12" fill="none" stroke="#9d174d" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M -10 -4 C -14 -14, 6 -18, 11 -4 C 16 5, 4 14, -6 11" fill="none" stroke="#fdf2f8" stroke-width="1.6" stroke-linecap="round"/>
+                    <circle cx="0" cy="0" r="4" fill="#be185d"/>
+                </g>
+
+                <!-- 3. Rosa Derecha Superior (Rosada) -->
+                <g class="flower-head flower-delay-2" transform="translate(258, 148)">
+                    <circle cx="0" cy="0" r="30" fill="url(#rosePink)"/>
+                    <path d="M 18 -8 C 25 -24, -8 -30, -18 -10 C -26 6, -10 24, 10 20 C 24 16, 26 -2, 14 -12" fill="none" stroke="#9d174d" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 10 -4 C 14 -14, -6 -18, -11 -4 C -16 5, -4 14, 6 11" fill="none" stroke="#fdf2f8" stroke-width="1.6" stroke-linecap="round"/>
+                    <circle cx="0" cy="0" r="4" fill="#be185d"/>
+                </g>
+
+                <!-- 4. Rosa Central Media (Coral / Durazno) -->
+                <g class="flower-head flower-delay-3" transform="translate(200, 182)">
+                    <circle cx="0" cy="0" r="33" fill="url(#rosePeach)"/>
+                    <path d="M -20 -9 C -28 -26, 9 -32, 20 -11 C 29 7, 11 26, -11 22 C -26 18, -29 -2, -15 -13" fill="none" stroke="#be123c" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M -12 -5 C -16 -16, 7 -20, 12 -5 C 18 5, 5 16, -7 12" fill="none" stroke="#fff1f2" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="0" cy="0" r="4.5" fill="#e11d48"/>
+                </g>
+
+                <!-- 5. Rosa Izquierda Baja (Roja) -->
+                <g class="flower-head flower-delay-2" transform="translate(132, 202)">
+                    <circle cx="0" cy="0" r="28" fill="url(#roseRed)"/>
+                    <path d="M -16 -7 C -22 -22, 7 -28, 16 -9 C 24 6, 9 22, -9 18 C -22 14, -24 -2, -12 -10" fill="none" stroke="#881337" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M -8 -3 C -11 -12, 5 -15, 9 -3 C 13 4, 3 12, -5 9" fill="none" stroke="#fecdd3" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+
+                <!-- 6. Rosa Derecha Baja (Roja) -->
+                <g class="flower-head flower-delay-1" transform="translate(268, 202)">
+                    <circle cx="0" cy="0" r="28" fill="url(#roseRed)"/>
+                    <path d="M 16 -7 C 22 -22, -7 -28, -16 -9 C -24 6, -9 22, 9 18 C 22 14, 24 -2, 12 -10" fill="none" stroke="#881337" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 8 -3 C 11 -12, -5 -15, -9 -3 C -13 4, -3 12, 5 9" fill="none" stroke="#fecdd3" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+
+                <!-- Papel Envoltorio Frontal (Pliegues elegantes) -->
+                <!-- Solapa izquierda -->
+                <path d="M 85 160 L 215 290 L 235 375 L 165 375 L 105 235 Z" fill="url(#paperFrontLeft)" stroke="#fecdd3" stroke-width="2" stroke-linejoin="round"/>
+                <!-- Solapa derecha -->
+                <path d="M 315 160 L 185 290 L 165 375 L 235 375 L 295 235 Z" fill="url(#paperFrontRight)" stroke="#fda4af" stroke-width="2" stroke-linejoin="round"/>
+                
+                <!-- Detalle de borde decorativo en las solapas -->
+                <path d="M 92 168 L 210 286" fill="none" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.35"/>
+                <path d="M 308 168 L 190 286" fill="none" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.35"/>
+
+                <!-- Lazo y Moño de Satén Rojo -->
+                <g transform="translate(200, 298)">
+                    <!-- Cintas colgantes -->
+                    <path d="M -8 5 Q -25 45 -38 78 L -22 72 L -16 82 Q -6 45 -2 8 Z" fill="url(#ribbonGrad)"/>
+                    <path d="M 8 5 Q 25 45 38 78 L 22 72 L 16 82 Q 6 45 2 8 Z" fill="url(#ribbonGrad)"/>
+                    
+                    <!-- Orejas del moño -->
+                    <path d="M -5 0 C -45 -28, -55 18, -5 6 Z" fill="url(#ribbonGrad)" stroke="#9f1239" stroke-width="1"/>
+                    <path d="M 5 0 C 45 -28, 55 18, 5 6 Z" fill="url(#ribbonGrad)" stroke="#9f1239" stroke-width="1"/>
+                    
+                    <!-- Pliegues interiores del moño -->
+                    <path d="M -8 2 C -28 -10, -32 8, -8 4" fill="none" stroke="#fda4af" stroke-width="1.2" opacity="0.6"/>
+                    <path d="M 8 2 C 28 -10, 32 8, 8 4" fill="none" stroke="#fda4af" stroke-width="1.2" opacity="0.6"/>
+
+                    <!-- Nudo central -->
+                    <rect x="-10" y="-8" width="20" height="18" rx="6" fill="#be123c" stroke="#881337" stroke-width="1.2"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Mensaje Principal -->
+        <h1 class="font-script text-6xl sm:text-7xl text-rose-600 text-glow mt-1 mb-2 leading-tight">
+            Te amo mucho
+        </h1>
+
+        <!-- Dedicatoria Secundaria -->
+        <p class="font-serif-elegant italic text-rose-900/80 text-base sm:text-lg max-w-sm leading-relaxed mb-6">
+            "Cada pétalo de este ramo lleva un pedacito de mi corazón, recordándote lo mucho que iluminas mi vida."
+        </p>
+
+        <!-- Botón Interactivo para enviar más corazones y pétalos -->
+        <button id="send-love-btn" class="love-btn text-white font-sans-clean font-semibold text-sm sm:text-base px-7 py-3.5 rounded-full flex items-center gap-2.5 cursor-pointer focus:outline-none focus:ring-4 focus:ring-rose-300">
+            <span>Enviar más amor</span>
+            <svg class="w-5 h-5 fill-current animate-pulse" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </button>
+
+        <!-- Contador sutil de cariño enviado -->
+        <p id="love-counter" class="text-xs font-sans-clean text-rose-500/80 mt-3 h-4 transition-opacity duration-300 opacity-0">
+            Has enviado <span id="count-num" class="font-semibold">0</span> muestras de amor ♥
+        </p>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const petalsContainer = document.getElementById('petals-background');
+            const sendLoveBtn = document.getElementById('send-love-btn');
+            const bouquetTrigger = document.getElementById('bouquet-trigger');
+            const loveCounter = document.getElementById('love-counter');
+            const countNum = document.getElementById('count-num');
+
+            let loveCount = 0;
+
+            // Colores cálidos y románticos para pétalos y corazones
+            const petalColors = ['#fb7185', '#f43f5e', '#fda4af', '#f472b6', '#fecdd3'];
+            const heartEmojis = ['❤️', '💖', '🌸', '💕', '🌹', '💗'];
+
+            /**
+             * Crea un pétalo SVG flotante en el fondo
+             */
+            function createBackgroundPetal() {
+                const petal = document.createElement('div');
+                petal.classList.add('floating-petal');
+
+                // Posición horizontal aleatoria
+                const startLeft = Math.random() * 100;
+                // Tamaño aleatorio
+                const size = Math.random() * 14 + 12; // entre 12px y 26px
+                // Duración de caída aleatoria
+                const duration = Math.random() * 7 + 8; // entre 8s y 15s
+             
